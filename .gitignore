@@ -4,3 +4,4 @@ temp
 .vscode/
 npm-debug.log
 ios/Pods
+package-lock.json
