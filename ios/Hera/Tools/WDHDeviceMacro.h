@@ -34,7 +34,7 @@
 #define IS_IPHONE_6      (IS_IPHONE && [[UIScreen mainScreen] bounds].size.height == 667.0)
 #define IS_IPHONE_6PLUS  (IS_IPHONE && [[UIScreen mainScreen] nativeScale] == 3.0f)
 #define IS_IPHONE_6_PLUS (IS_IPHONE && [[UIScreen mainScreen] bounds].size.height == 736.0)
-#define IS_IPHONE_X  	 (IS_IPHONE && [[UIScreen mainScreen] bounds].size.height == 812.0)
+#define IS_IPHONE_X  	 (IS_IPHONE && [[UIScreen mainScreen] bounds].size.height >= 812.0)
 
 
 #endif /* WDHDeviceMacro_h */
