@@ -108,7 +108,7 @@ var rootPath = path.resolve(__dirname, '../tmp')
 var distPath = path.resolve(curPath, program.dist || './dist')
 
 let step = 0
-function doTransformFile () {
+function doTransformFile() {
   let commonDir = distPath + '/framework'
 
   if (program.build) {
@@ -120,8 +120,8 @@ function doTransformFile () {
       .catch(e => console.log(e))
   } else {
     var core = require('../lib/core')
-    distPath = distPath + '/app'
-
+    // distPath = distPath + '/app'
+    distPath = distPath + '/' + path.basename(folder) //2020、1、2 修复编译的小程序文件目录跟随源名称
     core
       .getOtherFiles(folder, distPath)
       .then(() => {
@@ -129,11 +129,11 @@ function doTransformFile () {
       })
       .catch(e => console.log(e))
 
-    core.getService({ showLog: program.log || false }).then(function (content) {
+    core.getService({ showLog: program.log || false }).then(function(content) {
       util.createFile(distPath, 'service.html', content, zipFiles('构建入口'))
     })
 
-    core.getServiceConfig(true).then(function (content) {
+    core.getServiceConfig(true).then(function(content) {
       util.createFile(
         distPath + '/script',
         'service-config.js',
@@ -142,7 +142,7 @@ function doTransformFile () {
       )
     })
 
-    core.getHeraConfig(true).then(function (content) {
+    core.getHeraConfig(true).then(function(content) {
       util.createFile(
         distPath + '/script',
         'config.js',
@@ -151,7 +151,7 @@ function doTransformFile () {
       )
     })
 
-    core.getServiceJs(true).then(function (content) {
+    core.getServiceJs(true).then(function(content) {
       util.createFile(
         distPath + '/script',
         'app-service.js',
@@ -162,10 +162,10 @@ function doTransformFile () {
 
     let viewTpl = util.loadTemplate('view')
     let appCss
-    core.getAppWxss('./app').then(function (content) {
+    core.getAppWxss('./app').then(function(content) {
       appCss = content.replace(/\/\*#\s*sourceMappingURL=.*\*\/$/, '')
 
-      util.readFile('./app.json').then(function (config) {
+      util.readFile('./app.json').then(function(config) {
         let appConfig = JSON.parse(config)
         let pages = appConfig.pages
         let count = 0
@@ -214,9 +214,9 @@ function doTransformFile () {
   }
 }
 
-var zipFiles = (function () {
+var zipFiles = (function() {
   let step = 6
-  return function (stepName) {
+  return function(stepName) {
     step--
     if (step === 0) {
       console.log(chalk.green(`${stepName}完成, 开始压缩文件`))
@@ -228,14 +228,14 @@ var zipFiles = (function () {
           zlib: { level: 9 } // Sets the compression level.
         })
 
-        output.on('close', function () {
+        output.on('close', function() {
           const size = archive.pointer()
           console.log(chalk.green(`压缩完成：${size} bytes (${size / 1024} kb)`))
           console.log('文件已生成到:' + distPath)
         })
 
         // good practice to catch warnings (ie stat failures and other non-blocking errors)
-        archive.on('warning', function (err) {
+        archive.on('warning', function(err) {
           if (err.code === 'ENOENT') {
             // log warning
           } else {
@@ -245,7 +245,7 @@ var zipFiles = (function () {
         })
 
         // good practice to catch this error explicitly
-        archive.on('error', function (err) {
+        archive.on('error', function(err) {
           throw err
         })
 
@@ -306,21 +306,21 @@ var zipFiles = (function () {
 
 // }
 
-util.exists(distPath).then(function (exist) {
-  exec('rm -rf ' + distPath + '/*', function (err, out) {
+util.exists(distPath).then(function(exist) {
+  exec('rm -rf ' + distPath + '/*', function(err, out) {
     err && console.log(chalk.red(err))
     console.log('文件将生成到: ' + distPath)
     if (exist) {
       doTransformFile()
     } else {
-      fs.mkdir(distPath, function () {
+      fs.mkdir(distPath, function() {
         doTransformFile()
       })
     }
   })
 })
 
-process.on('uncaughtException', function (e) {
+process.on('uncaughtException', function(e) {
   console.log(chalk.red('发生了未知错误'))
   console.error(e.stack)
 })
