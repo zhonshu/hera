@@ -2,7 +2,7 @@
 export default window.exparser.registerElement({
   is: 'wx-scroll-view',
   template:
-    '\n    <div id="main" class="wx-scroll-view" style$="overflow-x: hidden; overflow-y: hidden;">\n      <slot></slot>\n    </div>\n  ',
+    '\n    <div id="main" class="wx-scroll-view" style$="overflow-x: hidden; overflow-y: scroll;">\n      <slot></slot>\n    </div>\n  ',
   behaviors: ['wx-base', 'wx-touchtrack'],
   properties: {
     scrollX: {
